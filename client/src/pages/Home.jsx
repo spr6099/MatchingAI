@@ -9,12 +9,13 @@ const Home = () => {
   const [selected, setSelected] = useState(null);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const fetchData = async () => {
     try {
       const investorData = await axios.get(`${baseUrl}/getInvestors`);
       const startupData = await axios.get(`${baseUrl}/getStartups`);
-      setInvestors(investorData.data);
-      setStartups(startupData.data);
+      setInvestors(investorData.data || []);
+      setStartups(startupData.data || []);
     } catch (error) {
       console.error("Error in fetching data", error.message);
     }
@@ -77,32 +78,33 @@ const Home = () => {
           </div>
 
           <ul className="space-y-2 overflow-y-auto max-h-96 md:max-h-[calc(100vh-150px)]">
-            {(activeTab === "investors" ? investors : startups).map((item) => (
-              <li
-                key={item._id}
-                onClick={() => setSelected(item)}
-                className={`p-3 rounded cursor-pointer border ${
-                  selected?._id === item._id
-                    ? "bg-blue-600 text-white border-indigo-600 transition-colors duration-200"
-                    : "hover:bg-gray-100"
-                }`}
-              >
-                <h3 className="font-bold">{item.name}</h3>
-                {/* <p className="text-sm text-gray-500"> */}
-                <p
-                  className={`text-sm ${
+            {Array.isArray(activeTab === "investors" ? investors : startups) &&
+              (activeTab === "investors" ? investors : startups).map((item) => (
+                <li
+                  key={item._id}
+                  onClick={() => setSelected(item)}
+                  className={`p-3 rounded cursor-pointer border ${
                     selected?._id === item._id
-                      ? "text-indigo-100"
-                      : "text-gray-500"
+                      ? "bg-blue-600 text-white border-indigo-600 transition-colors duration-200"
+                      : "hover:bg-gray-100"
                   }`}
                 >
-                  {activeTab === "investors"
-                    ? item.focusIndustry
-                    : item.industry}
-                  • {item.stage}
-                </p>
-              </li>
-            ))}
+                  <h3 className="font-bold">{item.name}</h3>
+                  {/* <p className="text-sm text-gray-500"> */}
+                  <p
+                    className={`text-sm ${
+                      selected?._id === item._id
+                        ? "text-indigo-100"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {activeTab === "investors"
+                      ? item.focusIndustry
+                      : item.industry}
+                    • {item.stage}
+                  </p>
+                </li>
+              ))}
           </ul>
         </aside>
 

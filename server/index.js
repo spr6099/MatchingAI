@@ -24,9 +24,9 @@ db();
 
 app.use("/api", router);
 
-app.use("/", (req, res) => {
-  res.send("Welcome");
-});
+// app.use("/", (req, res) => {
+//   res.send("Welcome");
+// });
 
 app.listen(5001, () => {
   console.log("Server running on Port 5001");
